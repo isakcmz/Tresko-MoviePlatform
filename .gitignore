@@ -1,0 +1,40 @@
+## Build outputs
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bin/
+obj/
+out/
+
+## Visual Studio cache and settings
+.vs/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.sln.docstates
+
+## Visual Studio Code settings
+.vscode/
+
+## JetBrains (Rider, etc.)
+.idea/
+*.sln.iml
+
+## SQLite Database files (Local test environment caches)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+filmsitesi.db
+
+## OS-generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

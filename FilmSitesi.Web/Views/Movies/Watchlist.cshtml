@@ -1,0 +1,66 @@
+@model List<FilmSitesi.Web.Models.ViewModels.WatchlistItemViewModel>
+
+@{
+    ViewData["Title"] = "Watchlist";
+}
+
+<div class="list-page">
+    <div class="list-page-header">
+        <h1>Watchlist</h1>
+        <p>İzlemek istediğin filmler, notların ve önceliklerin.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="movie-grid">
+            @foreach (var item in Model)
+            {
+                <div class="movie-card">
+                    <div class="movie-poster-wrapper">
+                        @if (!string.IsNullOrWhiteSpace(item.PosterPath))
+                        {
+                            <img class="movie-poster"
+                                 src="@($"https://image.tmdb.org/t/p/w500{item.PosterPath}")"
+                                 alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="movie-poster-placeholder">No Image</div>
+                        }
+                    </div>
+
+                    <div class="movie-card-body">
+                        <h5 class="movie-title">@item.Title</h5>
+
+                        <div class="movie-meta">
+                            <span><strong>Öncelik:</strong> @item.Priority</span>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Notes))
+                        {
+                            <div class="activity-note mb-3">@item.Notes</div>
+                        }
+
+                        <p class="movie-overview">
+                            Eklenme: @item.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </p>
+
+                        <a asp-controller="Movies"
+                           asp-action="Detail"
+                           asp-route-id="@item.TmdbId"
+                           class="btn btn-primary w-100">
+                            Filme Git
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-feed">
+            <h3>Watchlist'in boş</h3>
+            <p>Beğendiğin filmleri watchlist'e ekleyerek burada görebilirsin.</p>
+        </div>
+    }
+</div>

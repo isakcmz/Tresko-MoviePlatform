@@ -1,0 +1,84 @@
+@model FilmSitesi.Web.Models.ViewModels.MovieSearchViewModel
+
+@{
+    ViewData["Title"] = "Film Ara";
+}
+
+<div class="search-page">
+    <div class="search-header">
+        <h1>Film Ara</h1>
+        <p>TMDb üzerinden film bul, detayına git, puan ver ve listelerine ekle.</p>
+    </div>
+
+    <form asp-action="Search" method="post" class="search-form">
+        <div class="search-box">
+            <input asp-for="Query" class="form-control search-input" placeholder="Örn: Interstellar, Batman, Dune..." />
+            <button type="submit" class="btn btn-dark search-button">Ara</button>
+        </div>
+    </form>
+
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <div class="results-header">
+            <h3>Sonuçlar</h3>
+            <span>@Model.Results.Count film bulundu</span>
+        </div>
+
+        <div class="movie-grid">
+            @foreach (var movie in Model.Results)
+            {
+                <div class="movie-card">
+                    <div class="movie-poster-wrapper">
+                        @if (!string.IsNullOrWhiteSpace(movie.PosterPath))
+                        {
+                            <img class="movie-poster"
+                                 src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
+                                 alt="@movie.Title" />
+                        }
+                        else
+                        {
+                            <div class="movie-poster-placeholder">No Image</div>
+                        }
+                    </div>
+
+                    <div class="movie-card-body">
+                        <h5 class="movie-title">@movie.Title</h5>
+
+                        <div class="movie-meta">
+                            <span>
+                                @(string.IsNullOrWhiteSpace(movie.ReleaseDate) ? "Tarih yok" : movie.ReleaseDate)
+                            </span>
+                            <span>⭐ @movie.VoteAverage.ToString("0.0")</span>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(movie.Overview))
+                        {
+                            <p class="movie-overview">
+                                @(movie.Overview.Length > 140
+                                    ? movie.Overview.Substring(0, 140) + "..."
+                                    : movie.Overview)
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="movie-overview">Açıklama bulunamadı.</p>
+                        }
+
+                        <a asp-action="Detail"
+                           asp-route-id="@movie.Id"
+                           class="btn btn-primary w-100">
+                            Detaya Git
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.Query))
+    {
+        <div class="empty-feed mt-4">
+            <h3>Sonuç bulunamadı</h3>
+            <p>Farklı bir film adıyla tekrar deneyebilirsin.</p>
+        </div>
+    }
+</div>

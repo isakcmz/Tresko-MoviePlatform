@@ -1,0 +1,62 @@
+@model List<FilmSitesi.Web.Models.ViewModels.WatchedMovieViewModel>
+
+@{
+    ViewData["Title"] = "İzlediklerim";
+}
+
+<div class="list-page">
+    <div class="list-page-header">
+        <h1>İzlediklerim</h1>
+        <p>İzlediğin filmler ve izleme notların.</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="movie-grid">
+            @foreach (var item in Model)
+            {
+                <div class="movie-card">
+                    <div class="movie-poster-wrapper">
+                        @if (!string.IsNullOrWhiteSpace(item.PosterPath))
+                        {
+                            <img class="movie-poster"
+                                 src="@($"https://image.tmdb.org/t/p/w500{item.PosterPath}")"
+                                 alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="movie-poster-placeholder">No Image</div>
+                        }
+                    </div>
+
+                    <div class="movie-card-body">
+                        <h5 class="movie-title">@item.Title</h5>
+
+                        <div class="movie-meta">
+                            <span>@item.WatchedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Notes))
+                        {
+                            <div class="activity-note mb-3">@item.Notes</div>
+                        }
+
+                        <a asp-controller="Movies"
+                           asp-action="Detail"
+                           asp-route-id="@item.TmdbId"
+                           class="btn btn-primary w-100">
+                            Filme Git
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-feed">
+            <h3>Henüz izlediğin film yok</h3>
+            <p>Bir film detayına girip “İzledim” dediğinde burada görünecek.</p>
+        </div>
+    }
+</div>
