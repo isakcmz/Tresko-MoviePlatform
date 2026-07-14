@@ -17,4 +17,14 @@ public class ProfileViewModel
     public List<Review> RecentReviews { get; set; } = new();
     
     public List<ActivityViewModel> RecentActivities { get; set; } = new();
+
+    public string UserId { get; set; } = string.Empty;
+
+    public bool IsOwnProfile { get; set; }
+
+    public bool IsFollowing { get; set; }
+
+    public int FollowersCount { get; set; }
+
+    public int FollowingCount { get; set; }
 }

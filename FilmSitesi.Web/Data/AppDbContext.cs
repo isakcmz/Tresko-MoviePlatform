@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<WatchlistItem> WatchlistItems => Set<WatchlistItem>();
     public DbSet<WatchedMovie> WatchedMovies => Set<WatchedMovie>();
     public DbSet<Activity> Activities => Set<Activity>();
+    public DbSet<UserFollow> UserFollows => Set<UserFollow>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -119,6 +120,23 @@ public class AppDbContext : IdentityDbContext<AppUser>
         modelBuilder.Entity<Activity>()
             .Property(a => a.Note)
             .HasMaxLength(1000);
+
+        modelBuilder.Entity<UserFollow>()
+            .HasOne(uf => uf.Follower)
+            .WithMany()
+            .HasForeignKey(uf => uf.FollowerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserFollow>()
+            .HasOne(uf => uf.Followed)
+            .WithMany()
+            .HasForeignKey(uf => uf.FollowedId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserFollow>()
+            .HasIndex(uf => new { uf.FollowerId, uf.FollowedId })
+            .IsUnique();
+
 
     }
 }

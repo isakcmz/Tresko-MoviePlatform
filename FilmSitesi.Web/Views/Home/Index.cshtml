@@ -31,7 +31,12 @@
                     <div class="activity-content">
                         <div class="activity-top">
                             <div class="activity-text">
-                                <span class="activity-user">@activity.UserName</span>
+                                <a asp-controller="Profile"
+                                   asp-action="Index"
+                                   asp-route-userId="@activity.UserId"
+                                   class="activity-user profile-link">
+                                    @activity.UserName
+                                </a>
 
                                 @if (activity.Type == "Review")
                                 {

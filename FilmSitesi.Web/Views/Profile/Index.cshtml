@@ -16,6 +16,26 @@
         </div>
     </div>
 
+    <div class="profile-hero-actions">
+        @if (!Model.IsOwnProfile)
+        {
+            @if (Model.IsFollowing)
+            {
+                <form asp-action="Unfollow" method="post">
+                    <input type="hidden" name="userId" value="@Model.UserId" />
+                    <button type="submit" class="btn btn-outline-danger">Takibi Bırak</button>
+                </form>
+            }
+            else
+            {
+                <form asp-action="Follow" method="post">
+                    <input type="hidden" name="userId" value="@Model.UserId" />
+                    <button type="submit" class="btn btn-primary">Takip Et</button>
+                </form>
+            }
+        }
+    </div>
+
     <div class="profile-stats">
         <div class="profile-stat-card">
             <span class="profile-stat-number">@Model.WatchedCount</span>
@@ -30,6 +50,16 @@
         <div class="profile-stat-card">
             <span class="profile-stat-number">@Model.ReviewCount</span>
             <span class="profile-stat-label">Yorum</span>
+        </div>
+
+        <div class="profile-stat-card">
+            <span class="profile-stat-number">@Model.FollowersCount</span>
+            <span class="profile-stat-label">Takipçi</span>
+        </div>
+
+        <div class="profile-stat-card">
+            <span class="profile-stat-number">@Model.FollowingCount</span>
+            <span class="profile-stat-label">Takip</span>
         </div>
     </div>
 

@@ -42,6 +42,7 @@ public class HomeController : Controller
             .Take(20)
             .Select(a => new ActivityViewModel
             {
+                UserId = a.UserId,
                 UserName = a.User.UserName ?? "",
                 MovieTitle = a.Movie.Title,
                 MovieTmdbId = a.Movie.TmdbId,

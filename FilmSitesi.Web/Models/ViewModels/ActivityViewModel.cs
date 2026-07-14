@@ -17,4 +17,6 @@ public class ActivityViewModel
     public string Note { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
+
+    public string UserId { get; set; } = string.Empty;
 }
