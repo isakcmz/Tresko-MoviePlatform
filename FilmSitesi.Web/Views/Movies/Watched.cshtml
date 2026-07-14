@@ -7,7 +7,7 @@
 <div class="list-page">
     <div class="list-page-header">
         <h1>İzlediklerim</h1>
-        <p>İzlediğin filmler ve izleme notların.</p>
+        <p>İzlediğin filmler ve izleme geçmişin burada.</p>
     </div>
 
     @if (Model != null && Model.Any())
@@ -15,40 +15,54 @@
         <div class="movie-grid">
             @foreach (var item in Model)
             {
-                <div class="movie-card">
-                    <div class="movie-poster-wrapper">
-                        @if (!string.IsNullOrWhiteSpace(item.PosterPath))
-                        {
-                            <img class="movie-poster"
-                                 src="@($"https://image.tmdb.org/t/p/w500{item.PosterPath}")"
-                                 alt="@item.Title" />
-                        }
-                        else
-                        {
-                            <div class="movie-poster-placeholder">No Image</div>
-                        }
-                    </div>
+                <a asp-controller="Movies"
+                   asp-action="Detail"
+                   asp-route-id="@item.TmdbId"
+                   class="poster-card-link">
+                    <div class="movie-card">
+                        <div class="movie-poster-wrapper hover-poster-card">
+                            @if (!string.IsNullOrWhiteSpace(item.PosterPath))
+                            {
+                                <img class="movie-poster"
+                                     src="@($"https://image.tmdb.org/t/p/w500{item.PosterPath}")"
+                                     alt="@item.Title" />
+                            }
+                            else
+                            {
+                                <div class="movie-poster-placeholder">No Image</div>
+                            }
 
-                    <div class="movie-card-body">
-                        <h5 class="movie-title">@item.Title</h5>
+                            <div class="poster-overlay">
+                                <div class="poster-overlay-content">
+                                    <div class="poster-overlay-title">
+                                        @item.Title
+                                    </div>
 
-                        <div class="movie-meta">
-                            <span>@item.WatchedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                                    <div class="poster-overlay-rating">
+                                        İzleme: @item.WatchedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                    </div>
+
+                                    <span class="btn btn-light btn-sm poster-overlay-button">
+                                        Filme Git
+                                    </span>
+                                </div>
+                            </div>
                         </div>
 
-                        @if (!string.IsNullOrWhiteSpace(item.Notes))
-                        {
-                            <div class="activity-note mb-3">@item.Notes</div>
-                        }
+                        <div class="movie-card-body">
+                            <h5 class="movie-title">@item.Title</h5>
 
-                        <a asp-controller="Movies"
-                           asp-action="Detail"
-                           asp-route-id="@item.TmdbId"
-                           class="btn btn-primary w-100">
-                            Filme Git
-                        </a>
+                            <div class="movie-meta">
+                                <span>@item.WatchedDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Notes))
+                            {
+                                <div class="activity-note mb-3">@item.Notes</div>
+                            }
+                        </div>
                     </div>
-                </div>
+                </a>
             }
         </div>
     }

@@ -28,7 +28,7 @@
             @foreach (var movie in Model.Results)
             {
                 <div class="movie-card">
-                    <div class="movie-poster-wrapper">
+                    <div class="movie-poster-wrapper hover-poster-card">
                         @if (!string.IsNullOrWhiteSpace(movie.PosterPath))
                         {
                             <img class="movie-poster"
@@ -39,6 +39,19 @@
                         {
                             <div class="movie-poster-placeholder">No Image</div>
                         }
+
+                        <div class="poster-overlay">
+                            <div class="poster-overlay-content">
+                                <div class="poster-overlay-title">@movie.Title</div>
+                                <div class="poster-overlay-rating">⭐ @movie.VoteAverage.ToString("0.0")</div>
+
+                                <a asp-action="Detail"
+                                    asp-route-id="@movie.Id"
+                                    class="btn btn-light btn-sm poster-overlay-button">
+                                     Detaya Git
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="movie-card-body">
@@ -63,12 +76,7 @@
                         {
                             <p class="movie-overview">Açıklama bulunamadı.</p>
                         }
-
-                        <a asp-action="Detail"
-                           asp-route-id="@movie.Id"
-                           class="btn btn-primary w-100">
-                            Detaya Git
-                        </a>
+                        
                     </div>
                 </div>
             }

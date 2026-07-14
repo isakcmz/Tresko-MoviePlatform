@@ -48,15 +48,34 @@
                        asp-route-id="@item.Movie.TmdbId"
                        class="poster-card-link">
                         <div class="poster-card">
-                            @if (!string.IsNullOrWhiteSpace(item.Movie.PosterPath))
-                            {
-                                <img src="@($"https://image.tmdb.org/t/p/w500{item.Movie.PosterPath}")"
-                                     alt="@item.Movie.Title" />
-                            }
-                            else
-                            {
-                                <div class="movie-poster-placeholder">No Image</div>
-                            }
+                            <div class="movie-poster-wrapper hover-poster-card">
+                                @if (!string.IsNullOrWhiteSpace(item.Movie.PosterPath))
+                                {
+                                    <img class="movie-poster"
+                                        src="@($"https://image.tmdb.org/t/p/w500{item.Movie.PosterPath}")"
+                                        alt="@item.Movie.Title" />
+                                }
+                                else
+                                {
+                                    <div class="movie-poster-placeholder">No Image</div>
+                                }
+
+                                <div class="poster-overlay">
+                                    <div class="poster-overlay-content">
+                                        <div class="poster-overlay-title">
+                                            @item.Movie.Title
+                                        </div>
+
+                                        <div class="poster-overlay-rating">
+                                            İzleme: @item.WatchedDate.ToLocalTime().ToString("dd.MM.yyyy")
+                                        </div>
+
+                                        <span class="btn btn-light btn-sm poster-overlay-button">
+                                            Filme Git
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="poster-card-body">
                                 <h6>@item.Movie.Title</h6>
