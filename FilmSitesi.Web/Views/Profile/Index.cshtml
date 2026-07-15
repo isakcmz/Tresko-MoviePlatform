@@ -37,20 +37,6 @@
     </div>
 
     <div class="profile-stats">
-        <div class="profile-stat-card">
-            <span class="profile-stat-number">@Model.WatchedCount</span>
-            <span class="profile-stat-label">İzlenen Film</span>
-        </div>
-
-        <div class="profile-stat-card">
-            <span class="profile-stat-number">@Model.WatchlistCount</span>
-            <span class="profile-stat-label">Watchlist</span>
-        </div>
-
-        <div class="profile-stat-card">
-            <span class="profile-stat-number">@Model.ReviewCount</span>
-            <span class="profile-stat-label">Yorum</span>
-        </div>
 
         <a asp-controller="Profile"
            asp-action="Followers"
@@ -66,6 +52,27 @@
            class="profile-stat-card text-decoration-none text-dark">
             <span class="profile-stat-number">@Model.FollowingCount</span>
             <span class="profile-stat-label">Takip</span>
+        </a>
+
+        <a asp-controller="Movies"
+            asp-action="Watched"
+            asp-route-userId="@Model.UserId"
+            class="profile-stat-card text-decoration-none text-dark">
+            <span class="profile-stat-number">@Model.WatchedCount</span>
+            <span class="profile-stat-label">İzlenen Film</span>
+        </a>
+
+        <a asp-controller="Movies"
+            asp-action="Watchlist"
+            asp-route-userId="@Model.UserId"
+            class="profile-stat-card text-decoration-none text-dark">
+            <span class="profile-stat-number">@Model.WatchlistCount</span>
+            <span class="profile-stat-label">Watchlist</span>
+        </a>
+
+        <a href="#recent-reviews" class="profile-stat-card text-decoration-none text-dark">
+            <span class="profile-stat-number">@Model.ReviewCount</span>
+            <span class="profile-stat-label">Yorum</span>
         </a>
 
     </div>
@@ -131,7 +138,7 @@
         }
     </div>
 
-    <div class="profile-section">
+    <div class="profile-section" id="recent-reviews">
         <div class="section-title-row">
             <h3>Son Yorumlar</h3>
         </div>

@@ -953,6 +953,7 @@ main.pb-3 {
 
 
 
+
 .profile-stat-card.text-decoration-none {
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
@@ -963,4 +964,16 @@ main.pb-3 {
 }
 
 
+
+
+
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+#recent-reviews {
+  scroll-margin-top: 90px;
+}
 

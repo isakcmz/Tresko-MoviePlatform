@@ -1,0 +1,69 @@
+@model FilmSitesi.Web.Models.ViewModels.UserSearchViewModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Ara";
+}
+
+<div class="list-page">
+    <div class="list-page-header">
+        <h1>Kullanıcı Ara</h1>
+        <p>Kullanıcı adına göre arama yap ve profillerine git.</p>
+    </div>
+
+    <form asp-action="Search" method="post" class="search-form">
+        <div class="search-box">
+            <input asp-for="Query" class="form-control search-input" placeholder="Kullanıcı adı yaz..." />
+            <button type="submit" class="btn btn-dark search-button">Ara</button>
+        </div>
+    </form>
+
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <div class="stack-list mt-4">
+            @foreach (var user in Model.Results)
+            {
+                <div class="stack-card">
+                    <div class="stack-card-header">
+                        <div>
+                            <a asp-controller="Profile"
+                               asp-action="Index"
+                               asp-route-userId="@user.UserId"
+                               class="movie-link">
+                                @user.UserName
+                            </a>
+
+                            <div class="text-muted mt-1">
+                                @user.FollowersCount takipçi · @user.FollowingCount takip
+                            </div>
+                        </div>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != user.UserName)
+                        {
+                            @if (user.IsFollowing)
+                            {
+                                <form asp-action="Unfollow" method="post">
+                                    <input type="hidden" name="userId" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Takibi Bırak</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Follow" method="post">
+                                    <input type="hidden" name="userId" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Takip Et</button>
+                                </form>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(Model.Query))
+    {
+        <div class="empty-feed mt-4">
+            <h3>Sonuç bulunamadı</h3>
+            <p>Farklı bir kullanıcı adı ile tekrar deneyebilirsin.</p>
+        </div>
+    }
+</div>
