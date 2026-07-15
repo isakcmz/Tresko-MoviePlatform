@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace FilmSitesi.Web.Controllers;
 
 public class MoviesController : Controller
@@ -32,10 +33,24 @@ public class MoviesController : Controller
         if (movie == null)
             return NotFound();
 
+        var currentUser = await _userManager.GetUserAsync(User);
+        var currentUserId = currentUser?.Id;
+
         var reviews = await _context.Reviews
             .Include(r => r.User)
             .Where(r => r.MovieId == movie.Id)
             .OrderByDescending(r => r.CreatedAt)
+            .Select(r => new ReviewItemViewModel
+            {
+                Id = r.Id,
+                UserName = r.User.UserName ?? "",
+                Comment = r.Comment,
+                Rating = r.Rating,
+                CreatedAt = r.CreatedAt,
+                LikeCount = _context.ReviewLikes.Count(rl => rl.ReviewId == r.Id),
+                IsLikedByCurrentUser = currentUserId != null &&
+                                    _context.ReviewLikes.Any(rl => rl.ReviewId == r.Id && rl.UserId == currentUserId)
+            })
             .ToListAsync();
 
         var averageRating = 0.0;
@@ -356,6 +371,45 @@ public class MoviesController : Controller
             .ToListAsync();
 
         return View(items);
+    }
+
+
+
+
+
+
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ToggleLike(int reviewId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var existing = await _context.ReviewLikes
+            .FirstOrDefaultAsync(x => x.ReviewId == reviewId && x.UserId == user.Id);
+
+        if (existing != null)
+        {
+            _context.ReviewLikes.Remove(existing);
+        }
+        else
+        {
+            var like = new ReviewLike
+            {
+                ReviewId = reviewId,
+                UserId = user.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.ReviewLikes.Add(like);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Redirect(Request.Headers["Referer"].ToString());
     }
 
 

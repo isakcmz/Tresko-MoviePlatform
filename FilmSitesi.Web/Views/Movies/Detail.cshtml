@@ -220,7 +220,7 @@
             {
                 <div class="stack-card">
                     <div class="stack-card-header">
-                        <span class="fw-bold">@review.User.UserName</span>
+                        <strong>@review.UserName</strong>
 
                         <span class="review-rating-badge">
                             ⭐ @review.Rating.ToString("0.0") / 5
@@ -229,9 +229,29 @@
 
                     <p class="stack-card-text">@review.Comment</p>
 
-                    <small class="text-muted">
-                        @review.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
-                    </small>
+                    <div class="d-flex align-items-center justify-content-between mt-3">
+                        <small class="text-muted">
+                            @review.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                        </small>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="Movies" asp-action="ToggleLike" method="post" class="m-0">
+                                <input type="hidden" name="reviewId" value="@review.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-sm @(review.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-secondary")">
+                                    👍 @review.LikeCount
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="btn btn-sm btn-outline-secondary disabled">
+                                👍 @review.LikeCount
+                            </span>
+                        }
+                    </div>
                 </div>
             }
         }
