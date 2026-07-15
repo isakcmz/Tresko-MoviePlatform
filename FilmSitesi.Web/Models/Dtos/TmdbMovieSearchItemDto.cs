@@ -20,10 +20,10 @@ public class TmdbMovieSearchItemDto
     public string ReleaseDate { get; set; } = string.Empty;
 
     [JsonPropertyName("poster_path")]
-    public string PosterPath { get; set; } = string.Empty;
+    public string? PosterPath { get; set; }
 
     [JsonPropertyName("backdrop_path")]
-    public string BackdropPath { get; set; } = string.Empty;
+    public string? BackdropPath { get; set; }
 
     [JsonPropertyName("vote_average")]
     public double VoteAverage { get; set; }

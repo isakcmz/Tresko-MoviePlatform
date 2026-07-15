@@ -6,8 +6,16 @@
 
 <div class="feed-page">
     <div class="feed-header">
-        <h1>Topluluk Akışı</h1>
-        <p>Diğer kullanıcıların son film aktiviteleri</p>
+        @if (ViewBag.IsFollowingFeed != null && (bool)ViewBag.IsFollowingFeed)
+        {
+            <h1>Takip Ettiklerin</h1>
+            <p>Takip ettiğin kullanıcıların son film aktiviteleri</p>
+        }
+        else
+        {
+            <h1>Topluluk Akışı</h1>
+            <p>Film topluluğundaki son aktiviteler</p>
+        }
     </div>
 
     @if (Model != null && Model.Any())

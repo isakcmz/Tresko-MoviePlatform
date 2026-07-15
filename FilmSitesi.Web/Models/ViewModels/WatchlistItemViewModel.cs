@@ -8,7 +8,7 @@ public class WatchlistItemViewModel
 
     public string Title { get; set; } = string.Empty;
 
-    public string PosterPath { get; set; } = string.Empty;
+    public string? PosterPath { get; set; }
 
     public int Priority { get; set; }
 

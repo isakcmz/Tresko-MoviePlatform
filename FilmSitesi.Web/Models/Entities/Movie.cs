@@ -14,9 +14,9 @@ public class Movie
 
     public DateTime? ReleaseDate { get; set; }
 
-    public string PosterPath { get; set; } = string.Empty;
+    public string? PosterPath { get; set; }
 
-    public string BackdropPath { get; set; } = string.Empty;
+    public string? BackdropPath { get; set; }
 
     public double VoteAverage { get; set; }
 

@@ -114,32 +114,44 @@ public class MoviesController : Controller
 
 
 
+
+
+
+
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddReview(int movieId, double rating, string comment)
+    public async Task<IActionResult> AddReview(int movieId, string rating, string comment)
     {
         var user = await _userManager.GetUserAsync(User);
 
         if (user == null)
             return Challenge();
 
-        if (rating < 0.5 || rating > 5 || rating % 0.5 != 0)
-        {
-            TempData["ReviewError"] = "Puan 0.5 ile 5 arasında ve 0.5 artışlarla olmalıdır.";
-            return RedirectToAction("Detail", new { id = movieId });
-        }
-
         var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
 
         if (movie == null)
             return NotFound();
+
+        // JS'den gelen (. veya , içeren) ondalık değerleri culture bağımsız parse ediyoruz
+        double parsedRating = 0;
+        bool isParsed = double.TryParse(rating, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out parsedRating);
+        if (!isParsed)
+        {
+            isParsed = double.TryParse(rating, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture, out parsedRating);
+        }
+
+        if (!isParsed || parsedRating < 0.5 || parsedRating > 5 || parsedRating % 0.5 != 0)
+        {
+            TempData["ReviewError"] = "Puan 0.5 ile 5 arasında ve 0.5 artışlarla olmalıdır.";
+            return RedirectToAction("Detail", new { id = movie.TmdbId });
+        }
 
         var existingReview = await _context.Reviews
             .FirstOrDefaultAsync(r => r.UserId == user.Id && r.MovieId == movieId);
 
         if (existingReview != null)
         {
-            existingReview.Rating = rating;
+            existingReview.Rating = parsedRating;
             existingReview.Comment = comment ?? string.Empty;
             existingReview.CreatedAt = DateTime.UtcNow;
         }
@@ -149,7 +161,7 @@ public class MoviesController : Controller
             {
                 UserId = user.Id,
                 MovieId = movieId,
-                Rating = rating,
+                Rating = parsedRating,
                 Comment = comment ?? string.Empty,
                 CreatedAt = DateTime.UtcNow
             };
@@ -162,7 +174,7 @@ public class MoviesController : Controller
             UserId = user.Id,
             MovieId = movieId,
             Type = "Review",
-            Rating = rating,
+            Rating = parsedRating,
             Note = comment ?? string.Empty,
             CreatedAt = DateTime.UtcNow
         };
@@ -173,8 +185,6 @@ public class MoviesController : Controller
 
         return RedirectToAction("Detail", new { id = movie.TmdbId });
     }
-
-
 
     [Authorize]
     [HttpPost]

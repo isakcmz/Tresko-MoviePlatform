@@ -953,3 +953,14 @@ main.pb-3 {
 
 
 
+.profile-stat-card.text-decoration-none {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.profile-stat-card.text-decoration-none:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08);
+}
+
+
+

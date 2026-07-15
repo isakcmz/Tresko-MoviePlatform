@@ -8,13 +8,13 @@ public class ActivityViewModel
 
     public int MovieTmdbId { get; set; }
 
-    public string MoviePosterPath { get; set; } = string.Empty;
+    public string? MoviePosterPath { get; set; }
 
     public string Type { get; set; } = string.Empty;
 
     public double? Rating { get; set; }
 
-    public string Note { get; set; } = string.Empty;
+    public string? Note { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

@@ -34,13 +34,13 @@ public class MovieService : IMovieService
         movie = new Movie
         {
             TmdbId = tmdbMovie.Id,
-            Title = tmdbMovie.Title,
-            OriginalTitle = tmdbMovie.OriginalTitle,
-            Overview = tmdbMovie.Overview,
+            Title = tmdbMovie.Title ?? string.Empty,
+            OriginalTitle = tmdbMovie.OriginalTitle ?? string.Empty,
+            Overview = tmdbMovie.Overview ?? string.Empty,
             PosterPath = tmdbMovie.PosterPath,
             BackdropPath = tmdbMovie.BackdropPath,
             VoteAverage = tmdbMovie.VoteAverage,
-            OriginalLanguage = tmdbMovie.OriginalLanguage
+            OriginalLanguage = tmdbMovie.OriginalLanguage ?? string.Empty
         };
 
         // 4️⃣ veritabanına kaydet

@@ -52,15 +52,22 @@
             <span class="profile-stat-label">Yorum</span>
         </div>
 
-        <div class="profile-stat-card">
+        <a asp-controller="Profile"
+           asp-action="Followers"
+           asp-route-userId="@Model.UserId"
+           class="profile-stat-card text-decoration-none text-dark">
             <span class="profile-stat-number">@Model.FollowersCount</span>
             <span class="profile-stat-label">Takipçi</span>
-        </div>
+        </a>
 
-        <div class="profile-stat-card">
+        <a asp-controller="Profile"
+           asp-action="Following"
+           asp-route-userId="@Model.UserId"
+           class="profile-stat-card text-decoration-none text-dark">
             <span class="profile-stat-number">@Model.FollowingCount</span>
             <span class="profile-stat-label">Takip</span>
-        </div>
+        </a>
+
     </div>
 
     <div class="profile-section">

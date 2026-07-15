@@ -8,7 +8,7 @@ public class WatchedMovieViewModel
 
     public string Title { get; set; } = string.Empty;
 
-    public string PosterPath { get; set; } = string.Empty;
+    public string? PosterPath { get; set; }
 
     public DateTime WatchedDate { get; set; }
 
