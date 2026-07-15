@@ -12,7 +12,8 @@
 
     <form asp-action="Search" method="post" class="search-form">
         <div class="search-box">
-            <input asp-for="Query" class="form-control search-input" placeholder="Kullanıcı adı yaz..." />
+            <span class="search-icon">🔍</span>
+            <input asp-for="Query" class="form-control search-input" placeholder="Kullanıcı adı ara..." />
             <button type="submit" class="btn btn-dark search-button">Ara</button>
         </div>
     </form>
