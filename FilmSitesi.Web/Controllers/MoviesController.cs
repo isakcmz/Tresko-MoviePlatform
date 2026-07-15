@@ -201,6 +201,9 @@ public class MoviesController : Controller
         return RedirectToAction("Detail", new { id = movie.TmdbId });
     }
 
+
+
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddToWatchlist(int movieId)
@@ -247,6 +250,8 @@ public class MoviesController : Controller
     }
 
 
+
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> RemoveFromWatchlist(int movieId)
@@ -272,6 +277,7 @@ public class MoviesController : Controller
 
         return RedirectToAction("Detail", new { id = movie.TmdbId });
     }
+
 
 
 
@@ -303,6 +309,7 @@ public class MoviesController : Controller
 
         return View(items);
     }
+
 
 
 
@@ -346,6 +353,7 @@ public class MoviesController : Controller
 
 
 
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> Watched()
@@ -386,14 +394,36 @@ public class MoviesController : Controller
         var user = await _userManager.GetUserAsync(User);
 
         if (user == null)
-            return Challenge();
+            return Unauthorized();
+
+        var review = await _context.Reviews
+            .FirstOrDefaultAsync(r => r.Id == reviewId);
+
+        if (review == null)
+            return NotFound();
 
         var existing = await _context.ReviewLikes
             .FirstOrDefaultAsync(x => x.ReviewId == reviewId && x.UserId == user.Id);
 
+        bool liked;
+
         if (existing != null)
         {
             _context.ReviewLikes.Remove(existing);
+
+            var existingActivity = await _context.Activities
+                .FirstOrDefaultAsync(a =>
+                    a.UserId == user.Id &&
+                    a.MovieId == review.MovieId &&
+                    a.Type == "ReviewLike" &&
+                    a.Note == reviewId.ToString());
+
+            if (existingActivity != null)
+            {
+                _context.Activities.Remove(existingActivity);
+            }
+
+            liked = false;
         }
         else
         {
@@ -405,11 +435,31 @@ public class MoviesController : Controller
             };
 
             _context.ReviewLikes.Add(like);
+
+            var activity = new Activity
+            {
+                UserId = user.Id,
+                MovieId = review.MovieId,
+                Type = "ReviewLike",
+                Note = reviewId.ToString(),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Activities.Add(activity);
+
+            liked = true;
         }
 
         await _context.SaveChangesAsync();
 
-        return Redirect(Request.Headers["Referer"].ToString());
+        var likeCount = await _context.ReviewLikes.CountAsync(x => x.ReviewId == reviewId);
+
+        return Json(new
+        {
+            success = true,
+            liked,
+            likeCount
+        });
     }
 
 

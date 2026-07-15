@@ -236,14 +236,11 @@
 
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
-                            <form asp-controller="Movies" asp-action="ToggleLike" method="post" class="m-0">
-                                <input type="hidden" name="reviewId" value="@review.Id" />
-
-                                <button type="submit"
-                                        class="btn btn-sm @(review.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-secondary")">
-                                    👍 @review.LikeCount
-                                </button>
-                            </form>
+                            <button type="button"
+                                class="btn btn-sm review-like-btn @(review.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-secondary")"
+                                data-review-id="@review.Id">
+                                👍 <span class="like-count">@review.LikeCount</span>
+                            </button>
                         }
                         else
                         {
@@ -330,6 +327,8 @@
 
 
 
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const starContainer = document.getElementById("starRating");
@@ -401,3 +400,53 @@
         }
     });
 </script>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const likeButtons = document.querySelectorAll(".review-like-btn");
+
+        likeButtons.forEach(button => {
+            button.addEventListener("click", async function () {
+                const reviewId = this.dataset.reviewId;
+
+                try {
+                    const response = await fetch('/Movies/ToggleLike', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: `reviewId=${encodeURIComponent(reviewId)}`
+                    });
+
+                    if (!response.ok) {
+                        console.error("Like isteği başarısız.");
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const likeCountSpan = this.querySelector(".like-count");
+                        likeCountSpan.textContent = data.likeCount;
+
+                        if (data.liked) {
+                            this.classList.remove("btn-outline-secondary");
+                            this.classList.add("btn-primary");
+                        } else {
+                            this.classList.remove("btn-primary");
+                            this.classList.add("btn-outline-secondary");
+                        }
+                    }
+                } catch (error) {
+                    console.error("Like sırasında hata:", error);
+                }
+            });
+        });
+    });
+</script>
+
+

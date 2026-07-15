@@ -213,6 +213,12 @@
                                 <strong>@activity.MovieTitle</strong> filmini watchlist'ine ekledin.
                             </p>
                         }
+                        else if (activity.Type == "ReviewLike")
+                        {
+                            <p>
+                                <strong>@activity.MovieTitle</strong> filmindeki bir yorumu beğendin.
+                            </p>
+                        }
 
                         @if (!string.IsNullOrWhiteSpace(activity.Note))
                         {
