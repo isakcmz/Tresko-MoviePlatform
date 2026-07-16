@@ -99,6 +99,34 @@ public class ProfileController : Controller
             })
             .ToListAsync();
 
+
+        var likedReviewIds = recentActivities
+            .Where(a => a.Type == "ReviewLike" && int.TryParse(a.Note, out _))
+            .Select(a => int.Parse(a.Note))
+            .Distinct()
+            .ToList();
+
+        if (likedReviewIds.Any())
+        {
+            var likedReviews = await _context.Reviews
+                .Where(r => likedReviewIds.Contains(r.Id))
+                .ToDictionaryAsync(r => r.Id, r => r.Comment);
+
+            foreach (var activity in recentActivities.Where(a => a.Type == "ReviewLike"))
+            {
+                if (int.TryParse(activity.Note, out var reviewId) &&
+                    likedReviews.TryGetValue(reviewId, out var comment))
+                {
+                    activity.Note = comment ?? "";
+                }
+                else
+                {
+                    activity.Note = "";
+                }
+            }
+        }
+
+
         var model = new ProfileViewModel
         {
             UserId = profileUser.Id,

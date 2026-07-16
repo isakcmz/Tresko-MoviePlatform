@@ -68,6 +68,35 @@ public class HomeController : Controller
             })
             .ToListAsync();
 
+
+        var likedReviewIds = activities
+            .Where(a => a.Type == "ReviewLike" && int.TryParse(a.Note, out _))
+            .Select(a => int.Parse(a.Note))
+            .Distinct()
+            .ToList();
+
+        if (likedReviewIds.Any())
+        {
+            var likedReviews = await _context.Reviews
+                .Where(r => likedReviewIds.Contains(r.Id))
+                .ToDictionaryAsync(r => r.Id, r => r.Comment);
+
+            foreach (var activity in activities.Where(a => a.Type == "ReviewLike"))
+            {
+                if (int.TryParse(activity.Note, out var reviewId) &&
+                    likedReviews.TryGetValue(reviewId, out var comment))
+                {
+                    activity.Note = comment ?? "";
+                }
+                else
+                {
+                    activity.Note = "";
+                }
+            }
+        }
+
+
+
         ViewBag.IsFollowingFeed = currentUser != null && followingIds.Any();
 
         return View(activities);

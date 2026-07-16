@@ -112,7 +112,7 @@
                             </div>
                         </div>
 
-                        @if (!string.IsNullOrWhiteSpace(activity.Note) && activity.Type != "ReviewLike")
+                        @if (!string.IsNullOrWhiteSpace(activity.Note))
                         {
                             <div class="activity-note">
                                 @activity.Note
