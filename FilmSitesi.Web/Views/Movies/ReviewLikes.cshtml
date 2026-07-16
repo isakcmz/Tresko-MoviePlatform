@@ -1,0 +1,61 @@
+@model List<FilmSitesi.Web.Models.ViewModels.UserListItemViewModel>
+
+@{
+    ViewData["Title"] = "Beğenenler";
+}
+
+<div class="list-page">
+    <div class="list-page-header">
+        <h1>Bu Yorumu Beğenenler</h1>
+        <p>@ViewBag.MovieTitle filmi için bu yorumu beğenen kullanıcılar</p>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="stack-list">
+            @foreach (var user in Model)
+            {
+                <div class="stack-card">
+                    <div class="stack-card-header">
+                        <div>
+                            <a asp-controller="Profile"
+                               asp-action="Index"
+                               asp-route-userId="@user.UserId"
+                               class="movie-link">
+                                @user.UserName
+                            </a>
+
+                            <div class="text-muted mt-1">
+                                @user.FollowersCount takipçi · @user.FollowingCount takip
+                            </div>
+                        </div>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && User.Identity.Name != user.UserName)
+                        {
+                            @if (user.IsFollowing)
+                            {
+                                <form asp-controller="Profile" asp-action="Unfollow" method="post">
+                                    <input type="hidden" name="userId" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Takibi Bırak</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-controller="Profile" asp-action="Follow" method="post">
+                                    <input type="hidden" name="userId" value="@user.UserId" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Takip Et</button>
+                                </form>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-feed">
+            <p>Bu yorumu henüz kimse beğenmedi.</p>
+        </div>
+    }
+</div>

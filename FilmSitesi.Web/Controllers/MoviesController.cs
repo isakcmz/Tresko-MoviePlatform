@@ -465,4 +465,59 @@ public class MoviesController : Controller
 
 
 
+
+
+
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> ReviewLikes(int reviewId)
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser == null)
+            return Challenge();
+
+        var review = await _context.Reviews
+            .Include(r => r.Movie)
+            .FirstOrDefaultAsync(r => r.Id == reviewId);
+
+        if (review == null)
+            return NotFound();
+
+        var likeUsers = await _context.ReviewLikes
+            .Include(rl => rl.User)
+            .Where(rl => rl.ReviewId == reviewId)
+            .OrderByDescending(rl => rl.CreatedAt)
+            .Select(rl => rl.User)
+            .ToListAsync();
+
+        var result = new List<UserListItemViewModel>();
+
+        foreach (var user in likeUsers)
+        {
+            var followersCount = await _context.UserFollows.CountAsync(f => f.FollowedId == user.Id);
+            var followingCount = await _context.UserFollows.CountAsync(f => f.FollowerId == user.Id);
+            var isFollowing = await _context.UserFollows.AnyAsync(f =>
+                f.FollowerId == currentUser.Id && f.FollowedId == user.Id);
+
+            result.Add(new UserListItemViewModel
+            {
+                UserId = user.Id,
+                UserName = user.UserName ?? "",
+                FollowersCount = followersCount,
+                FollowingCount = followingCount,
+                IsFollowing = isFollowing
+            });
+        }
+
+        ViewBag.MovieTitle = review.Movie.Title;
+        ViewBag.ReviewId = reviewId;
+
+        return View(result);
+    }
+
+
+
+
 }

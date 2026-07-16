@@ -234,20 +234,29 @@
                             @review.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                         </small>
 
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <button type="button"
-                                class="btn btn-sm review-like-btn @(review.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-secondary")"
-                                data-review-id="@review.Id">
-                                👍 <span class="like-count">@review.LikeCount</span>
-                            </button>
-                        }
-                        else
-                        {
-                            <span class="btn btn-sm btn-outline-secondary disabled">
-                                👍 @review.LikeCount
-                            </span>
-                        }
+                        <div class="d-flex align-items-center gap-2">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <button type="button"
+                                        class="btn btn-sm review-like-btn @(review.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-secondary")"
+                                        data-review-id="@review.Id">
+                                    👍 <span class="like-count">@review.LikeCount</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="btn btn-sm btn-outline-secondary disabled">
+                                    👍 <span class="like-count">@review.LikeCount</span>
+                                </span>
+                            }
+
+                            <a asp-controller="Movies"
+                            asp-action="ReviewLikes"
+                            asp-route-reviewId="@review.Id"
+                            class="btn btn-sm btn-outline-dark">
+                                Beğenenler
+                            </a>
+                        </div>
                     </div>
                 </div>
             }
