@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<UserFollow> UserFollows => Set<UserFollow>();
     public DbSet<ReviewLike> ReviewLikes { get; set; }
+    public DbSet<FavoriteMovie> FavoriteMovies => Set<FavoriteMovie>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -146,6 +147,22 @@ public class AppDbContext : IdentityDbContext<AppUser>
 
         modelBuilder.Entity<ReviewLike>()
             .HasIndex(rl => new { rl.ReviewId, rl.UserId })
+            .IsUnique();
+
+        modelBuilder.Entity<FavoriteMovie>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.FavoriteMovies)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FavoriteMovie>()
+            .HasOne(f => f.Movie)
+            .WithMany(m => m.FavoriteMovies)
+            .HasForeignKey(f => f.MovieId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FavoriteMovie>()
+            .HasIndex(f => new { f.UserId, f.MovieId })
             .IsUnique();
 
     }

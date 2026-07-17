@@ -127,6 +127,15 @@ public class ProfileController : Controller
         }
 
 
+        var favoriteMovies = await _context.FavoriteMovies
+            .Include(f => f.Movie)
+            .Where(f => f.UserId == profileUser.Id)
+            .OrderBy(f => f.CreatedAt)
+            .Select(f => f.Movie)
+            .Take(4)
+            .ToListAsync();
+
+
         var model = new ProfileViewModel
         {
             UserId = profileUser.Id,
@@ -140,7 +149,8 @@ public class ProfileController : Controller
             ReviewCount = reviewCount,
             RecentWatched = recentWatched,
             RecentReviews = recentReviews,
-            RecentActivities = recentActivities
+            RecentActivities = recentActivities,
+            FavoriteMovies = favoriteMovies
         };
 
         return View(model);

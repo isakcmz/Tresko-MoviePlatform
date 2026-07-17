@@ -27,4 +27,6 @@ public class ProfileViewModel
     public int FollowersCount { get; set; }
 
     public int FollowingCount { get; set; }
+
+    public List<Movie> FavoriteMovies { get; set; } = new();
 }

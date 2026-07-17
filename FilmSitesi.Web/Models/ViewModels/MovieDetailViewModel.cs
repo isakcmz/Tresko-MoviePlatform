@@ -27,4 +27,8 @@ public class MovieDetailViewModel
     public int RatingCount { get; set; }
 
     public List<ReviewItemViewModel> Reviews { get; set; } = new();
+
+    public bool IsFavorite { get; set; }
+
+    public int FavoriteCount { get; set; }
 }

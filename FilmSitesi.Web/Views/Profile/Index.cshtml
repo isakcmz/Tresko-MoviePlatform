@@ -79,6 +79,57 @@
 
     <div class="profile-section">
         <div class="section-title-row">
+            <h3>Favori 4 Film</h3>
+        </div>
+
+        @if (Model.FavoriteMovies != null && Model.FavoriteMovies.Any())
+        {
+            <div class="poster-grid">
+                @foreach (var movie in Model.FavoriteMovies)
+                {
+                    <a asp-controller="Movies"
+                    asp-action="Detail"
+                    asp-route-id="@movie.TmdbId"
+                    class="poster-card-link">
+                        <div class="poster-card">
+                            <div class="movie-poster-wrapper hover-poster-card">
+                                @if (!string.IsNullOrWhiteSpace(movie.PosterPath))
+                                {
+                                    <img class="movie-poster"
+                                        src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
+                                        alt="@movie.Title" />
+                                }
+                                else
+                                {
+                                    <div class="movie-poster-placeholder">No Image</div>
+                                }
+
+                                <div class="poster-overlay">
+                                    <div class="poster-overlay-content">
+                                        <div class="poster-overlay-title">@movie.Title</div>
+                                        <span class="btn btn-light btn-sm poster-overlay-button">Filme Git</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="poster-card-body">
+                                <h6>@movie.Title</h6>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-feed">
+                <p>Henüz favori film seçilmemiş.</p>
+            </div>
+        }
+    </div>
+
+    <div class="profile-section">
+        <div class="section-title-row">
             <h3>Son İzlenen Filmler</h3>
         </div>
 

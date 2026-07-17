@@ -143,6 +143,41 @@
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
         <div class="detail-card">
+            <h3>Favori 4 Film</h3>
+
+            @if (TempData["FavoriteError"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["FavoriteError"]
+                </div>
+            }
+
+            <p class="text-muted">Bu film favori listende görünebilir. En fazla 4 film seçebilirsin.</p>
+
+            <p><strong>Toplam favorileyen:</strong> @Model.FavoriteCount</p>
+
+            @if (!Model.IsFavorite)
+            {
+                <form asp-action="AddToFavorites" method="post">
+                    <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                    <button type="submit" class="btn btn-dark">Favorilere Ekle</button>
+                </form>
+            }
+            else
+            {
+                <p class="mb-3"><strong>Bu film favorilerinde.</strong></p>
+
+                <form asp-action="RemoveFromFavorites" method="post">
+                    <input type="hidden" name="movieId" value="@Model.Movie.Id" />
+                    <button type="submit" class="btn btn-outline-danger">Favorilerden Çıkar</button>
+                </form>
+            }
+        </div>
+    }
+
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <div class="detail-card">
             <h3>Puan Ver / Yorum Yaz</h3>
 
             @if (TempData["ReviewError"] != null)

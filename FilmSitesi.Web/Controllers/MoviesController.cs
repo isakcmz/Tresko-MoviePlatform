@@ -69,6 +69,11 @@ public class MoviesController : Controller
             RatingCount = ratingCount
         };
 
+        var favoriteCount = await _context.FavoriteMovies
+            .CountAsync(f => f.MovieId == movie.Id);
+
+        viewModel.FavoriteCount = favoriteCount;
+
         var user = await _userManager.GetUserAsync(User);
 
         if (user != null)
@@ -103,6 +108,15 @@ public class MoviesController : Controller
                 viewModel.WatchedCount = watchedItems.Count;
                 viewModel.WatchedNotes = watchedItems.First().Notes;
             }
+
+            var favoriteItem = await _context.FavoriteMovies
+                .FirstOrDefaultAsync(f => f.UserId == user.Id && f.MovieId == movie.Id);
+
+            if (favoriteItem != null)
+            {
+                viewModel.IsFavorite = true;
+            }
+
         }
 
         return View(viewModel);
@@ -517,6 +531,78 @@ public class MoviesController : Controller
         return View(result);
     }
 
+
+
+
+
+
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> AddToFavorites(int movieId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
+
+        if (movie == null)
+            return NotFound();
+
+        var existing = await _context.FavoriteMovies
+            .FirstOrDefaultAsync(f => f.UserId == user.Id && f.MovieId == movieId);
+
+        if (existing == null)
+        {
+            var count = await _context.FavoriteMovies.CountAsync(f => f.UserId == user.Id);
+
+            if (count >= 4)
+            {
+                TempData["FavoriteError"] = "En fazla 4 favori film seçebilirsin.";
+                return RedirectToAction("Detail", new { id = movie.TmdbId });
+            }
+
+            var favorite = new FavoriteMovie
+            {
+                UserId = user.Id,
+                MovieId = movieId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.FavoriteMovies.Add(favorite);
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("Detail", new { id = movie.TmdbId });
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> RemoveFromFavorites(int movieId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Challenge();
+
+        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
+
+        if (movie == null)
+            return NotFound();
+
+        var existing = await _context.FavoriteMovies
+            .FirstOrDefaultAsync(f => f.UserId == user.Id && f.MovieId == movieId);
+
+        if (existing != null)
+        {
+            _context.FavoriteMovies.Remove(existing);
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("Detail", new { id = movie.TmdbId });
+    }
 
 
 

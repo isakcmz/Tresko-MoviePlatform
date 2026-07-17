@@ -31,4 +31,6 @@ public class Movie
     public List<WatchedMovie> WatchedMovies { get; set; } = new();
 
     public List<Activity> Activities { get; set; } = new();
+
+    public List<FavoriteMovie> FavoriteMovies { get; set; } = new();
 }
